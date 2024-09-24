@@ -43,3 +43,5 @@ TeamFlow is built to streamline project management for small teams by breaking d
    ```bash
    git clone https://github.com/yourusername/TeamFlow.git
    cd TeamFlow
+
+uvicorn app.main:app --reload
