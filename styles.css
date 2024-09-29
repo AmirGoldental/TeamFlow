@@ -1,0 +1,38 @@
+/* styles.css */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table th,
+table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+table th {
+    background-color: #f4f4f4;
+}
+
+table th:hover {
+    background-color: #e0e0e0;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+th[data-column="Date"] {
+    cursor: pointer;
+}
+
+th[data-column="Date"].asc::after {
+    content: " ▲";
+}
+
+th[data-column="Date"].desc::after {
+    content: " ▼";
+}

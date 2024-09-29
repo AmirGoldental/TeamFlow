@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+
+<head>
+  <script src="color-modes.js"></script>
+  <title>TeamFlow - Yet Another Management System</title>
+  <link href="bootstrap.css" rel="stylesheet">
+  <style>
+    .nav-link:hover {
+      font-weight: bold;
+    }
+
+    .collapse-row {
+      background-color: #f9f9f9;
+    }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid mx-3">
+      <a class="navbar-brand" href="#">TeamFlow</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+          <a class="nav-link" href="#">Scopes</a>
+          <a class="nav-link" href="#">Goals</a>
+          <a class="nav-link" href="#">Actions</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+<div id="content-container" class="container mt-3">
+  <h1>Actions</h1>
+  <table class="table table-hover mt-3">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Goal ID</th>
+        <th>Due Date</th>
+        <th>Assignee</th>
+        <th>Status</th>
+        <th>Focus</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="main-row" data-row-id="1">
+        <td>1</td>
+        <td>Action A1</td>
+        <td>Description of Action A1</td>
+        <td>1</td>
+        <td>2024-01-15</td>
+        <td>Alice</td>
+        <td>not</td>
+        <td>weekly</td>
+      </tr>
+      <tr class="main-row" data-row-id="2">
+        <td>2</td>
+        <td>Action B1</td>
+        <td>Description of Action B1</td>
+        <td>2</td>
+        <td>2024-02-20</td>
+        <td>Bob</td>
+        <td>done</td>
+        <td>none</td>
+      </tr>
+    </tbody>
+  </table>
+</div>  
+  
+</body>
+<script>
+  $(document).ready(function () {
+    // Handle click on each row
+    $('.main-row').click(function () {
+      var rowId = $(this).data('row-id');
+      var nextRow = $(this).next();
+
+      // Check if the next row is the collapse row
+      if (nextRow.hasClass('collapse-row')) {
+        // Toggle the visibility with slide animation
+        nextRow.find('.collapse').slideToggle(function () {
+          nextRow.remove();
+        });
+      } else {
+        // If collapse row is not present, insert it
+        var collapseContent = `
+          <tr class="collapse-row">
+            <td colspan="8">
+              <div class="collapse" id="collapseRow${rowId}">
+                <div class="p-3">
+                  <strong>Details for Action ${rowId}</strong>
+                  <p>This is more information about Action ${rowId}. Add any content you want here, like comments, additional data, etc.</p>
+                </div>
+              </div>
+            </td>
+          </tr>`;
+        $(this).after(collapseContent);
+        $('#collapseRow' + rowId).slideDown();
+      }
+    });
+  });
+</script>
+</html>
