@@ -1,99 +1,51 @@
-const fs = require('fs');
-const path = require('path');
-const csv = require('csv-parser');
 
-function loadCSV(filePath) {
-  return new Promise((resolve, reject) => {
-    const results = [];
-    fs.createReadStream(path.join(__dirname, 'data', filePath))
-      .pipe(csv())
-      .on('data', (data) => results.push(data))
-      .on('end', () => {
-        resolve(results);
-      });
-  });
-}
-
-function parseDate(dateString) {
-  // Adjust this function based on your date format
-  return new Date(dateString);
-}
-
-function renderTable(data) {
-  const tableContainer = document.getElementById('table-container');
-  const table = document.createElement('table');
-
-  // Create table header
-  const header = table.createTHead();
-  const headerRow = header.insertRow(0);
-
-  const columns = Object.keys(data[0]);
-  columns.forEach((col) => {
-    const th = document.createElement('th');
-    th.textContent = col;
-    th.dataset.column = col;
-
-    if (col.toLowerCase() === 'date') {
-      th.style.cursor = 'pointer';
-      th.addEventListener('click', () => {
-        sortTableByDate(data, table);
-      });
-    }
-
-    headerRow.appendChild(th);
-  });
-
-  // Create table body
-  const tbody = document.createElement('tbody');
-  data.forEach((row) => {
-    const tr = document.createElement('tr');
-    columns.forEach((col) => {
-      const td = document.createElement('td');
-      td.textContent = row[col];
-      tr.appendChild(td);
+function read_table(filePath) {
+    // Fetch the file from the given path
+    fetch(filePath)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('File read error');
+        }
+        return response.text();
+    })
+    .then(csvData => {
+        return parseCSVData(csvData);
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
     });
-    tbody.appendChild(tr);
-  });
+    function parseCSVData(csvData) {
+        let creationDateIndex = -1;
+        let csvRows = [];
 
-  table.appendChild(tbody);
-  tableContainer.innerHTML = ''; // Clear previous content
-  tableContainer.appendChild(table);
-}
+        const rows = csvData.split('\n').map(header => header.trim());
+        // Get headers and find "Creation Date" index
+        const headers = rows[0].split(',');
+        creationDateIndex = headers.indexOf("Creation Date");
 
-function sortTableByDate(data, table) {
-  // Toggle sort direction
-  if (!sortTableByDate.sortDirection || sortTableByDate.sortDirection === 'desc') {
-    sortTableByDate.sortDirection = 'asc';
-  } else {
-    sortTableByDate.sortDirection = 'desc';
-  }
+        let tableHTML = '<tr>';
+        headers.forEach(header => {
+            tableHTML += `<th>${header.trim()}</th>`;
+        });
+        tableHTML += '</tr>';
 
-  // Sort data
-  data.sort((a, b) => {
-    const dateA = parseDate(a.Date);
-    const dateB = parseDate(b.Date);
+        // Get rows
+        rows.slice(1).forEach(row => {
+            if (row.trim() !== '') {
+                const columns = row.split(',');
+                csvRows.push(columns); // Store each row as an array
+                tableHTML += '<tr>';
+                columns.forEach(column => {
+                    tableHTML += `<td>${column.trim()}</td>`;
+                });
+                tableHTML += '</tr>';
+            }
+        });
 
-    if (sortTableByDate.sortDirection === 'asc') {
-      return dateA - dateB;
-    } else {
-      return dateB - dateA;
+        // Set table content
+        //document.getElementById('csvTable').innerHTML = tableHTML;
+        return csvRows;
     }
-  });
-
-  // Re-render table with sorted data
-  renderTable(data);
-
-  // Update header classes
-  const ths = document.querySelectorAll('th');
-  ths.forEach((th) => {
-    if (th.dataset.column === 'Date') {
-      th.classList.remove('asc', 'desc');
-      th.classList.add(sortTableByDate.sortDirection);
-    }
-  });
 }
-
-// Load the CSV data
-loadCSV('actions.csv').then((data) => {
-  renderTable(data);
-});
+let csvRows = read_table('data/actions.csv');
+console.log(csvRows)

@@ -1,3 +1,3 @@
-id,name,description,goal_id,due_date,assignee,status,focus
-1,Action A1,Description of Action A1,1,2024-01-15,Alice,not,weekly
-2,Action B1,Description of Action B1,2,2024-02-20,Bob,done,none
+id,name,description,goal_id,due_date,assignee,status,focus,Creation Date
+1,Action A1,Description of Action A1,1,2024-01-15,Alice,not,weekly,2024-01-15
+2,Action B1,Description of Action B1,2,2024-02-20,Bob,done,none,2023-01-15
